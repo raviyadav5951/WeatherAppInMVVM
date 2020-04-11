@@ -12,6 +12,7 @@ import com.test.weatherapp.databinding.ActivityMainBinding
 import com.test.weatherapp.db.CurrentLocationWeather
 import com.test.weatherapp.db.WeatherResponse
 import com.test.weatherapp.db.WeekList
+import com.test.weatherapp.retrofit.Utils
 import com.test.weatherapp.viewmodel.MainActivityViewModel
 import io.realm.Realm
 import mumayank.com.airlocationlibrary.AirLocation
@@ -43,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.loading.observe(this, loadingLiveDataObserver)
         viewModel.loadError.observe(this, loadingErrorDataObserver)
 
+        if(!Utils.isNetworkAvailable(this)){
+            Toast.makeText(this,"You are offline.Please switch on the internet connection",Toast.LENGTH_LONG).show()
+        }
 
         setupLocation()
 

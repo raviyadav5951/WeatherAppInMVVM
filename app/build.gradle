@@ -63,6 +63,6 @@ dependencies {
     //rxjava
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxJavaVersion"
-    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation("io.coil-kt:coil:0.9.5")
 }

@@ -29,7 +29,7 @@ open class Coord(
 
 open class WeekList(
     @PrimaryKey
-    var dt: Int = 0,
+    var dt: Long = 0,
     var sunrise: Int = 0,
     var sunset: Int = 0,
     var temp: Temp?=null,

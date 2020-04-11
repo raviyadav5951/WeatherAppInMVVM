@@ -5,11 +5,13 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.test.weatherapp.databinding.ActivityMainBinding
 import com.test.weatherapp.db.WeatherResponse
 import com.test.weatherapp.model.CurrentLocationWeather
+import com.test.weatherapp.model.Main
 import com.test.weatherapp.viewmodel.MainActivityViewModel
 import io.realm.Realm
 import mumayank.com.airlocationlibrary.AirLocation
@@ -22,9 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var airLocation: AirLocation? = null
     private lateinit var viewModel: MainActivityViewModel
-
-    val CITY: String = "Pune,In"
-    val API = "cc65d87afabccabcd3c47633ef7d504d"
     private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +45,14 @@ class MainActivity : AppCompatActivity() {
 
 
         setupLocation()
+
+
+        binding.llViewForecast.setOnClickListener {
+            val forecastActivityIntent=Intent(this,WeatherForecastActivity::class.java)
+            startActivity(forecastActivityIntent)
+        }
+
+
     }
 
     private val loadingErrorDataObserver = androidx.lifecycle.Observer<Boolean> { isError ->
@@ -99,6 +106,8 @@ class MainActivity : AppCompatActivity() {
             override fun onFailed(locationFailedEnum: AirLocation.LocationFailedEnum) {
                 // couldn't fetch location due to reason available in locationFailedEnum
                 // you may optionally do something to inform the user, even though the reason may be obvious
+
+                Toast.makeText(applicationContext,"Location permission is required to proceed ahead in the application.",Toast.LENGTH_LONG).show()
 
             }
 
@@ -183,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                     Date(updatedAt * 1000)
                 )
             val temp = main.temp.toString() + "°C"
-            val tempMin = "Min Temp: " + main.temp_min.toString() + "°C"
+            val tempMin = "Min Temp: " + main.feels_like.toString() + "°C"
             val tempMax = "Max Temp: " + main.temp_max.toString() + "°C"
             val pressure = main.pressure
             val humidity = main.humidity

@@ -1,7 +1,7 @@
 package com.test.weatherapp.retrofit
 
+import com.test.weatherapp.db.CurrentLocationWeather
 import com.test.weatherapp.db.WeatherResponse
-import com.test.weatherapp.model.CurrentLocationWeather
 import io.reactivex.Single
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

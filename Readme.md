@@ -15,6 +15,9 @@ OpenWeatherMap api for weather data.
 
 Coil  for image loading https://github.com/coil-kt/coil
 
+Download APK Path :
+https://github.com/raviyadav5951/WeatherAppInMVVM//tree/master/apk
+
 ![Alt text](/screenshots/Screenshot_20200411-125210.png?raw=true "Current Location Weather")
 
 ![Alt text](/screenshots/Screenshot_20200411-125219.png?raw=true "16 days forecast Weather")

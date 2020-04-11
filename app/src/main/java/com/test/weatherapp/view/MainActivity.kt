@@ -5,11 +5,14 @@ import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.test.weatherapp.databinding.ActivityMainBinding
+import com.test.weatherapp.db.CurrentLocationWeather
 import com.test.weatherapp.db.WeatherResponse
-import com.test.weatherapp.model.CurrentLocationWeather
+import com.test.weatherapp.db.WeekList
+import com.test.weatherapp.retrofit.Utils
 import com.test.weatherapp.viewmodel.MainActivityViewModel
 import io.realm.Realm
 import mumayank.com.airlocationlibrary.AirLocation
@@ -22,9 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var airLocation: AirLocation? = null
     private lateinit var viewModel: MainActivityViewModel
-
-    val CITY: String = "Pune,In"
-    val API = "cc65d87afabccabcd3c47633ef7d504d"
     private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +44,19 @@ class MainActivity : AppCompatActivity() {
         viewModel.loading.observe(this, loadingLiveDataObserver)
         viewModel.loadError.observe(this, loadingErrorDataObserver)
 
+        if(!Utils.isNetworkAvailable(this)){
+            Toast.makeText(this,"You are offline.Please switch on the internet connection",Toast.LENGTH_LONG).show()
+        }
 
         setupLocation()
+
+
+        binding.llViewForecast.setOnClickListener {
+            val forecastActivityIntent=Intent(this,WeatherForecastActivity::class.java)
+            startActivity(forecastActivityIntent)
+        }
+        //for displaying old data if user is in offline mode
+        populateData()
     }
 
     private val loadingErrorDataObserver = androidx.lifecycle.Observer<Boolean> { isError ->
@@ -62,8 +73,11 @@ class MainActivity : AppCompatActivity() {
     private val currentLocationDataObserver =
         androidx.lifecycle.Observer<CurrentLocationWeather> { currentLocationData ->
             currentLocationData?.let {
+                realm.executeTransaction { realm ->
+                    // Add a person
+                    realm.insertOrUpdate(currentLocationData)
+                }
 
-                populateData(currentLocationData)
             }
         }
 
@@ -73,9 +87,11 @@ class MainActivity : AppCompatActivity() {
                 realm.executeTransaction { realm ->
                     // Add a person
                     realm.insertOrUpdate(twoWeekData)
-
+                    Log.e("last","afterapi data inserted")
+                    populateData()
                 }
             }
+
 
         }
 
@@ -100,6 +116,8 @@ class MainActivity : AppCompatActivity() {
                 // couldn't fetch location due to reason available in locationFailedEnum
                 // you may optionally do something to inform the user, even though the reason may be obvious
 
+                Toast.makeText(applicationContext,"Location permission is required to proceed ahead in the application.",Toast.LENGTH_LONG).show()
+
             }
 
         })
@@ -119,85 +137,37 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    private fun populateData(result: String?) {
-        try {
-            /* Extracting JSON returns from the API */
-            val jsonObj = JSONObject(result)
-            val main = jsonObj.getJSONObject("main")
-            val sys = jsonObj.getJSONObject("sys")
-            val wind = jsonObj.getJSONObject("wind")
-            val weather = jsonObj.getJSONArray("weather").getJSONObject(0)
 
-            val updatedAt: Long = jsonObj.getLong("dt")
+    private fun populateData() {
+        try {
+            Log.e("api","pop data called==")
+            val locationResponse=realm.where(CurrentLocationWeather::class.java).findFirst()
+            val main = locationResponse?.main
+            val sys = locationResponse?.sys
+            val wind = locationResponse?.wind
+            val weather = locationResponse?.weather?.get(0)
+
+            val updatedAt: Long = locationResponse?.dt!!
             val updatedAtText =
                 "Updated at: " + SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(
                     Date(updatedAt * 1000)
                 )
-            val temp = main.getString("temp") + "°C"
-            val tempMin = "Min Temp: " + main.getString("temp_min") + "°C"
-            val tempMax = "Max Temp: " + main.getString("temp_max") + "°C"
-            val pressure = main.getString("pressure")
-            val humidity = main.getString("humidity")
+            val temp = main?.temp.toString() + "°C"
+            val tempMin = "Min Temp: " + main?.feels_like.toString() + "°C"
+            val tempMax = "Max Temp: " + main?.temp_max.toString() + "°C"
+            val pressure = main?.pressure
+            val humidity = main?.humidity
 
-            val sunrise: Long = sys.getLong("sunrise")
-            val sunset: Long = sys.getLong("sunset")
-            val windSpeed = wind.getString("speed")
-            val weatherDescription = weather.getString("description")
+            val sunrise: Long = sys!!.sunrise
+            val sunset: Long = sys!!.sunset
+            val windSpeed = wind?.speed
+            val weatherDescription = weather?.description
 
-            val address = jsonObj.getString("name") + ", " + sys.getString("country")
-
-            binding.address.text = address
-            binding.updatedAt.text = updatedAtText
-            binding.status.text = weatherDescription.capitalize()
-            binding.temp.text = temp
-            binding.tempMin.text = tempMin
-            binding.tempMax.text = tempMax
-            binding.sunrise.text =
-                SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(sunrise * 1000))
-            binding.sunset.text =
-                SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(Date(sunset * 1000))
-            binding.wind.text = windSpeed
-            binding.pressure.text = pressure
-            binding.humidity.text = humidity
-
-            binding.loadingView.visibility = View.GONE
-            binding.mainContainer.visibility = View.VISIBLE
-
-        } catch (e: Exception) {
-            binding.loadingView.visibility = View.GONE
-            binding.listError.visibility = View.VISIBLE
-            e.printStackTrace()
-        }
-    }
-
-    private fun populateData(locationResponse: CurrentLocationWeather) {
-        try {
-            val main = locationResponse.main
-            val sys = locationResponse.sys
-            val wind = locationResponse.wind
-            val weather = locationResponse.weather[0]
-
-            val updatedAt: Long = locationResponse.dt
-            val updatedAtText =
-                "Updated at: " + SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ENGLISH).format(
-                    Date(updatedAt * 1000)
-                )
-            val temp = main.temp.toString() + "°C"
-            val tempMin = "Min Temp: " + main.temp_min.toString() + "°C"
-            val tempMax = "Max Temp: " + main.temp_max.toString() + "°C"
-            val pressure = main.pressure
-            val humidity = main.humidity
-
-            val sunrise: Long = sys.sunrise
-            val sunset: Long = sys.sunset
-            val windSpeed = wind.speed
-            val weatherDescription = weather.description
-
-            val address = locationResponse.name + ", " + sys.country
+            val address = locationResponse.name + ", " + sys?.country
 
             binding.address.text = address
             binding.updatedAt.text = updatedAtText
-            binding.status.text = weatherDescription.capitalize()
+            binding.status.text = weatherDescription?.capitalize()
             binding.temp.text = temp
             binding.tempMin.text = tempMin
             binding.tempMax.text = tempMax

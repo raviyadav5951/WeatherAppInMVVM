@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    >
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="11/04/2020" />
+
+
+    <ImageView
+        android:id="@+id/imgWeather"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="0.5"/>
+
+    <TextView
+        android:id="@+id/tvTemp"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        tools:text="" />
+
+    <TextView
+        android:id="@+id/tvPressure"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/tvHumidity"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/tvWind"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="1.5" />
+
+</LinearLayout>

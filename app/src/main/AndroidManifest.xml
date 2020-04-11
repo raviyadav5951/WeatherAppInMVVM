@@ -3,7 +3,7 @@
     package="com.test.weatherapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:name=".view.WeatherApplication"
         android:allowBackup="true"
@@ -23,6 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".view.WeatherForecastActivity" android:screenOrientation="portrait" android:theme="@style/CustomTheme"/>
     </application>
 
 </manifest>

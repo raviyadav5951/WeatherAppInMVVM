@@ -1,7 +1,7 @@
 package com.test.weatherapp.retrofit
 
+import com.test.weatherapp.db.CurrentLocationWeather
 import com.test.weatherapp.db.WeatherResponse
-import com.test.weatherapp.model.CurrentLocationWeather
 import io.reactivex.Single
 import retrofit2.http.Query
 import retrofit2.http.GET

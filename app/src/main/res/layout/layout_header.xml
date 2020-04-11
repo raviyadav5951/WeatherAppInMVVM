@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:weightSum="6.5"
+    >
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Date" />
+
+    <TextView
+        android:id="@+id/tvWeather"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Weather"
+        />
+
+    <TextView
+        android:id="@+id/tvTemp"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:text="Temp" />
+
+    <TextView
+        android:id="@+id/tvPressure"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Pressure" />
+
+    <TextView
+        android:id="@+id/tvHumidity"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Humidity" />
+
+    <TextView
+        android:id="@+id/tvWind"
+        style="@style/weather_labels"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Wind" />
+</LinearLayout>
